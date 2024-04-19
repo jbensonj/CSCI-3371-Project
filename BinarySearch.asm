@@ -13,3 +13,9 @@ main PROC
     ;call Binary Seach
     invoke ExitProcess, 0
 main ENDP
+
+;Binary Search Parameter
+;any other nessesary fuctions
+
+
+END main
