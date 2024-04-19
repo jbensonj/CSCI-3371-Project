@@ -11,6 +11,7 @@ array DWORD 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 main PROC
     ;set registers
     ;call Binary Seach
+    add esp, 8                     ; Clean up the stack
     invoke ExitProcess, 0
 main ENDP
 
