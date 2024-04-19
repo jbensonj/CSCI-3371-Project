@@ -1,4 +1,4 @@
-CSCI-3371-Project-2
+CSCI-3371-Project
 Developing Efficient Sorting and Searching Algorithms for Embedded Systems
 
 Project Idea 2: Developing Efficient Sorting and Searching Algorithms for Embedded Systems
