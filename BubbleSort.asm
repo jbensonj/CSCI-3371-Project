@@ -11,6 +11,7 @@ main PROC
     mov esi, OFFSET array          ; ESI points to the base of the array
     mov ecx, LENGTHOF array        ; ECX is the number of elements in the array
     call BubbleSort
+    add esp, 8                     ; Clean up the stack
     invoke ExitProcess, 0
 main ENDP
 
