@@ -66,6 +66,8 @@ COMMENT!
 I'm comparing values here and it works just fine since this is a sorted list. it avoids having to check the stack or keep track of indexes.
 Maybe searching by indexers instead of by values would be more efficient, but I think it would depend on the array to be searched
 ideas?
+
+Jeff: to perform binary search the array must be sorted, and this methods time complexity will always be O(logn) meaning taking the average over all input compaired to this method; binary will be faster.
 !
 
 FindMid:
