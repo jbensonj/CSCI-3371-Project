@@ -12,7 +12,7 @@ main PROC
     push OFFSET array               ; push offset to the stack (4)      
     push LENGTHOF array             ; push lengthof to the stack (4)	 
     push num						; push num to the stack (4)
-    call BinSort                    ; push return address to the stack (4) 
+    call BinSearch                    ; push return address to the stack (4) 
 	add esp, 12
 
 	Invoke ExitProcess, 0        
