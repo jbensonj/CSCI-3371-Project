@@ -1,0 +1,33 @@
+.386
+.model flat, stdcall
+option casemap :none
+
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+include \masm32\include\user32.inc
+
+includelib \masm32\lib\kernel32.lib
+includelib \masm32\lib\user32.lib
+
+.data
+currentTime DB 8 dup(?) ; Buffer to store current time
+hour        DB ?
+minute      DB ?
+second      DB ?
+
+.code
+main PROC
+    mov ah, 02h     ; Function to read time from RTC
+    int 1Ah         ; BIOS interrupt to read time
+
+    mov hour, ch    ; Store current hour
+    mov minute, cl  ; Store current minute
+    mov second, dh  ; Store current second
+
+    ; Display the current time
+    invoke MessageBox, NULL, addr currentTime, addr currentTime, MB_OK
+
+    invoke ExitProcess, 0
+main ENDP
+
+END main
