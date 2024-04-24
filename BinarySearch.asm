@@ -1,99 +1,67 @@
-;Binary Search method goes here
 .386
 .model flat, stdcall
 .stack 4096
 ExitProcess PROTO, dwExitCode: DWORD
 
 .data
-	array DWORD 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-	num DWORD 3
+	array DWORD 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+	num DWORD 13
 
 .code
 main PROC
-    ;set registers
-    ;call Binary Seach
-    add esp, 8                 ; Clean up the stack
-    push esi
-    mov esi, OFFSET array
-    pop esi
-    push OFFSET array          ; push offset to the stack (4)      
-    push LENGTHOF array        ; push lengthof to the stack (4)	 
-    push num			       ; push num to the stack (4)
-    call BinSort               ; push rtnadd to the stack (4) 
-	add esp, 12                ; clean up the stack
+    push OFFSET array               ; push offset to the stack (4)      
+    push LENGTHOF array             ; push lengthof to the stack (4)	 
+    push num						; push num to the stack (4)
+    call BinSort                    ; push return address to the stack (4) 
+	add esp, 12
 
 	Invoke ExitProcess, 0        
 main ENDP
 
-;Binary Search Parameter
-;any other nessesary fuctions
-BinSort PROC
-    pushfd                         ; save all flags (4)
-    push ebx                       ; save ebx to hold num (4)
-    push esi                       ; hold offset for efficient access (4)
-    push edi                       ; hold lengthof for efficient access(4)
-
-    ; Check if the array is empty
-    mov edi, [esp + 24]            ; mov lengthof to saved register
-    cmp edi, 0
+BinSearch PROC
+    pushfd                          ; save all flags (4)
+    push ebx                        ; save ebx to hold num (4)
+    push esi                        ; save esi to hold offset (4)
+ 
+    mov edx, [esp + 20]             ; mov lengthof to register
+    cmp edx, 0                      ; Check if the array is empty
     je ArrayEmpty
 
-    ; initializing values to begin search    
-    jmp SetSearchBounds   
+; initializing values     
+    mov ebx, [esp+16]               ; EBX will hold num
+    mov esi, [esp+24]               ; ESI will hold offset
+    mov ecx, 0                      ; ECX will be L, initialize with 0
+    dec edx                         ; EDX will be R, initialize with LengthOf - 1 
+    
+Check:
+    cmp ecx, edx                    ; While L <= R 
+    jg ArrayEmpty                   ; Not found if L > R
 
-Search:
-    cmp eax, ecx                   ; when L=R we are done searching.
-    jz  DontSearch                 ; L=R, don't search 
+;find mid
+    mov eax, ecx                    ; EAX will hold Mid
+    add eax, edx                    ; 
+    shr eax, 1                      ; Mid = floor((L+R)/2)
 
-    cmp edx, ebx                   ; compare Mid to num and if Mid is larger or equal, then num must be in lower partition            
-    jge LowerSearch                ; 
-    mov eax, edx                   ; Mid < num -> set L = Mid + 1
-    inc eax
-    jmp FindMid                     ; Continue looking in upper bin
+;Search partitions for num 
+    cmp [esi+eax*4], ebx            ; compare array[Mid] to num         
+    jg LowerSearch                   
+    je Done
+
+    mov ecx, eax                    ; Adjust L to Mid + 1
+    inc ecx
+    jmp Check                       ; Continue looking in upper partition
 LowerSearch:
-    mov ecx, edx                   ; Mid >= num -> set R to Mid   
-    jmp FindMid                     ; continue looking in lower bin
+    mov edx, eax                    ; Adjust R to Mid - 1
+    dec edx                          
+    jmp Check                       ; continue looking in lower partition
 
-SetSearchBounds:
-    mov ebx, [esp+20]              ; EBX will be num
-    mov esi, [esp+28]              ; mov offset to a saved register
-    mov eax, [esi]                 ; EAX will be L, intialize by moving array[0] into eax
-    dec edi                        ; adjust lengthof for 0 based index
-    mov ecx, [esi+edi*4]             ; ECX will be R, initialize by moving array[edi] into ecx 
-    jmp FindMid
-
-COMMENT!
-I'm comparing values here and it works just fine since this is a sorted list. it avoids having to check the stack or keep track of indexes.
-Maybe searching by indexers instead of by values would be more efficient, but I think it would depend on the array to be searched
-ideas?
-
-Jeff: to perform binary search the array must be sorted, and this methods time complexity will always be O(logn) meaning taking the average over all input compaired to this method; binary will be faster.
-!
-
-FindMid:
-    mov edx, eax
-    add edx, ecx                    ; L+R
-    shr edx, 1                     ; (L+R)/2
-    jmp Search
-    
- 
-DontSearch:
-    cmp eax, ebx                    ; EAX holds return value.
-    jz Done
+; EAX holds return value 
 ArrayEmpty:
-    xor eax, eax                    ; Clear EAX to return 0 if not found or empty
-
-COMMENT!
-I wasn't sure what to use as a return value for unsuccessful searches
-should we distinguish between num not found and an empty array?
-!
-
-Done:
-    pop edi
+    xor eax, eax                    ; Clear EAX to return 0 if not found or empty 
+Done:                         
     pop esi
-    pop ebx                         ; restore callee saved registers
+    pop ebx                         ; restore saved registers
     popfd                           ; restore all flags
-    
-    ret                             ; EAX holds return value
-BinSort ENDP    
+    ret
+BinSearch ENDP    
 END main
