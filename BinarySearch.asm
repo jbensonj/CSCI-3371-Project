@@ -45,7 +45,7 @@ Check:
 ;Search partitions for num 
     cmp [esi+eax*4], ebx            ; compare array[Mid] to num         
     jg LowerSearch                   
-    je Done
+    je Found
 
     mov ecx, eax                    ; Adjust L to Mid + 1
     inc ecx
@@ -58,6 +58,9 @@ LowerSearch:
 ; EAX holds return value 
 ArrayEmpty:
     xor eax, eax                    ; Clear EAX to return 0 if not found or empty 
+	jmp Done
+Found: 
+	mov eax, 1
 Done:                         
     pop esi
     pop ebx                         ; restore saved registers
